@@ -2,6 +2,17 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-
-    TODO
+    {% if listings %}
+        <ul>
+            {% for item in listings %}
+            <li>
+                <h3>Title: {{ item.title }}</h3>
+                <ul>
+                    <li>Description: {{ item.description }}</li>
+                    <li>Price: ${{ item.price }}</li>
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock %}

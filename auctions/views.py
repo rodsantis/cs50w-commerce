@@ -91,3 +91,14 @@ def create_listing(request, *args, **kwargs):
     return render(request, "auctions/createlisting.html", {
         "form": NewListing()
     })
+
+def listing_page(request, id):
+    if request.method == "POST":
+        listing = Listing.objects.get(pk=id)
+        return render(request, "auctions/listingpage.html", {
+            "listing": listing
+        })
+
+    return render(request, "auctions/listingpage.html", {
+        "listing": Listing.objects.first()
+    })

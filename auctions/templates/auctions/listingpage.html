@@ -1,0 +1,22 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Listing: {{ listing.title }} </h2>
+    <section>
+        <figure>
+            <img src="" alt="Listed item image">
+        </figure>
+    </section>
+    <p>{{ listing.description }}</p>
+    <h3> ${{ listing.price }} </h3>
+    <div>
+        <form action="">
+
+        </form>
+    </div>
+    <h4>Details:</h4>
+    <ul>
+        <li>Listed by:</li>
+        <li>Category:</li>
+    </ul>
+{% endblock %}

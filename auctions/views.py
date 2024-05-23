@@ -9,6 +9,7 @@ from django import forms
 from .models import User, Listing, Comment, Bid
 
 
+# New Listing Form
 class NewListing(forms.Form):
     title = forms.CharField(label='Title')
     description = forms.CharField(label='Description', widget=forms.Textarea(attrs={"style": "height:300px"}))
@@ -93,13 +94,7 @@ def create_listing(request, *args, **kwargs):
         "form": NewListing()
     })
 
-def listing_page(request, id):
-    if request.method == "POST":
-        listing = Listing.objects.get(pk=id)
-        return render(request, "auctions/listingpage.html", {
-            "listing": listing
-        })
-
+def listing_page(request, name):
     return render(request, "auctions/listingpage.html", {
-        "listing": Listing.objects.first()
+        "listing": Listing.objects.get(title=name)
     })

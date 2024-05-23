@@ -5,17 +5,17 @@
     {% if listings %}
         <ul>
             {% for item in listings %}
-            <a href="{% url 'listing_page' item.pk %}">
-                <div>
-                    <li>
+            <div>
+                <li>
+                    <a href="{% url 'listing_page' item.title %}">
                         <h3>Title: {{ item.title }}</h3>
                         <ul>
                             <li>Description: {{ item.description }}</li>
                             <li>Starting price: ${{ item.price }}</li>
                         </ul>
-                    </li>
-                </div>
-            </a>
+                    </a>
+                </li>
+            </div>
             {% endfor %}
         </ul>
     {% endif %}

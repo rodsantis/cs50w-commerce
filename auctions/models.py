@@ -1,6 +1,7 @@
 from PIL import Image
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
 
 #CATEGORY_LIST = ['Clothing', 'Shoes', 'Cosmetics', 'Books', 'Movies', 'Music', 'Accessories', 'Eletronics']
 
@@ -11,8 +12,9 @@ class User(AbstractUser):
 
 class Listing(models.Model):
     title = models.CharField(max_length=100)
-    description = models.CharField(max_length=1000)
+    description = models.CharField(max_length=1000) 
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    username = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     # date = models.DateTimeField()
     # TODO add the image entry also
 

@@ -81,7 +81,8 @@ def create_listing(request, *args, **kwargs):
             form_title = form.cleaned_data["title"]
             form_description = form.cleaned_data["description"]
             form_initial_bid = form.cleaned_data["price"]
-            new = Listing(title=form_title, description=form_description, price=form_initial_bid)
+            current_user = request.user
+            new = Listing(title=form_title, description=form_description, price=form_initial_bid, username=current_user)
             new.save()
         else:
             return render(request, "auctions/createlisting.html", {

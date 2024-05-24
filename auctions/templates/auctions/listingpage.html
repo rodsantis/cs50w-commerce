@@ -2,11 +2,13 @@
 
 {% block body %}
     <h2>Listing: {{ listing.title }} </h2>
+    {% if listing.img %}
     <section>
         <figure>
-            <img src="" alt="Listed item image">
+            <img src="{{ listing.img.url }}" alt="Listed item image">
         </figure>
     </section>
+    {% endif %}
     <p>Description: {{ listing.description }}</p>
     <h3>Current price: ${{ listing.price }} </h3>
     <div>

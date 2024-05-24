@@ -3,8 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
 
-#CATEGORY_LIST = ['Clothing', 'Shoes', 'Cosmetics', 'Books', 'Movies', 'Music', 'Accessories', 'Eletronics']
-
 
 class User(AbstractUser):
     pass
@@ -14,6 +12,7 @@ class Listing(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=1000) 
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    category = models.CharField(max_length=64)
     username = models.ForeignKey(User, on_delete=models.CASCADE)
     img = models.ImageField(upload_to="auctions/uploads/images", blank=True, null=True, default=None)
     # date = models.DateTimeField()

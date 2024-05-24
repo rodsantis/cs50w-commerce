@@ -5,7 +5,7 @@
     {% if listing.img %}
     <section>
         <figure>
-            <img src="{{ listing.img.url }}" alt="Listed item image">
+            <img src="{{ listing.img.url }}" alt="Listed item image" style="width: 300px;">
         </figure>
     </section>
     {% endif %}
@@ -19,6 +19,6 @@
     <h4>Details:</h4>
     <ul>
         <li>Listed by: {{ listing.username }} </li>
-        <li>Category:</li>
+        <li>Category: {{ listing.category }} </li>
     </ul>
 {% endblock %}

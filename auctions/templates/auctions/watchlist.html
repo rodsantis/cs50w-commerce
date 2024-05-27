@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    Watchlist
+{% endblock %}
+
+{% block body %}
+    {% if message %}
+        <h2>{{ message }}</h2>
+    {% endif %}
+
+    {% if watch %}
+        <ul>
+            {% for item in watch %}
+            <div>
+                <li>
+                    <a href="{% url 'listing_page' item.listing.pk %}">
+                        <h3>Title: {{ item.listing.title }}</h3>
+                    </a>
+                        <ul>
+                            <li>Description: {{ item.listing.description }}</li>
+                            <li>Starting price: ${{ item.listing.price }}</li>
+                        </ul>
+                </li>
+            </div>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

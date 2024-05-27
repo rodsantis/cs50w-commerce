@@ -12,8 +12,15 @@
     <p>Description: {{ listing.description }}</p>
     <h3>Current price: ${{ listing.price }} </h3>
     <div>
-        <form action="">
-
+        <form style="display: inline-block;" action="{% url 'watchlist' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="watchlist" value="{{ listing.pk }}">
+            <button type="submit">Watchlist</button>
+        </form>
+        <form style="display: inline-block;" action="{% url 'watchlist' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="unwatchlist" value="{{ listing.pk }}">
+            <button type="submit">Unwatch</button>
         </form>
     </div>
     <h4>Details:</h4>

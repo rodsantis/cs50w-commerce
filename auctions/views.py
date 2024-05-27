@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
-from .models import User, Listing, Comment, Bid
+from .models import User, Listing, Comment, Bid, Watchlist
 
 CATEGORY_CHOICES = (
     ('Accessories', 'Accessories'),
@@ -28,6 +28,11 @@ class NewListing(forms.Form):
     price = forms.DecimalField(min_value=1.00, max_digits=10, decimal_places=2)
     img = forms.ImageField(required=False)
     choice = forms.ChoiceField(choices = CATEGORY_CHOICES)
+
+
+# Watch list Form
+# class WatchlistForm(forms.Form):
+
 
 
 def index(request):
@@ -110,7 +115,33 @@ def create_listing(request, *args, **kwargs):
         "form": NewListing()
     })
 
-def listing_page(request, name):
+def listing_page(request, id):
     return render(request, "auctions/listingpage.html", {
-        "listing": Listing.objects.get(title=name)
+        "listing": Listing.objects.get(pk=id),
+    })
+
+
+def watchlist(request):
+    if request.method == "POST":
+        if request.POST.get('watchlist', False):
+            listing_id = request.POST['watchlist']
+            listing = Listing.objects.get(pk=listing_id)
+            current_user = request.user
+            exist = Watchlist.objects.all().filter(listing=listing, username=current_user)
+            if exist:
+                return render(request, "auctions/watchlist.html", {
+                    "watch": Watchlist.objects.all().filter(username=request.user),
+                    "message": "You are already watching this Listing"
+                })
+            watch = Watchlist(listing=listing, username=current_user)
+            watch.save()
+        else:
+            listing_id = request.POST['unwatchlist']
+            listing = Listing.objects.get(pk=listing_id)
+            current_user = request.user
+            watch = Watchlist.objects.all().filter(listing=listing, username=current_user)
+            watch.delete()
+
+    return render(request, "auctions/watchlist.html", {
+        "watch": Watchlist.objects.all().filter(username=request.user)
     })

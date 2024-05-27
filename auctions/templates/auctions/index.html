@@ -7,7 +7,7 @@
             {% for item in listings %}
             <div>
                 <li>
-                    <a href="{% url 'listing_page' item.title %}">
+                    <a href="{% url 'listing_page' item.pk %}">
                         <h3>Title: {{ item.title }}</h3>
                         <ul>
                             <li>Description: {{ item.description }}</li>

@@ -11,6 +11,8 @@
     {% endif %}
     <p>Description: {{ listing.description }}</p>
     <h3>Current price: ${{ listing.price }} </h3>
+    {% if user.is_authenticated %}
+    <!-- Adding or removing watch list -->
     <div>
         <form style="display: inline-block;" action="{% url 'watchlist' %}" method="post">
             {% csrf_token %}
@@ -23,6 +25,29 @@
             <button type="submit">Unwatch</button>
         </form>
     </div>
+    <!-- Bidding for the product -->
+    {% if message %}
+        <h4 style="padding-top: 10px;">{{ message }}</h4>
+    {% endif %}
+    {% if winning_bid %}
+        <h6 style="padding-top: 10px;">{{ winning_bid }}</h6>
+    {% endif %}
+    <div style="padding-top: 10px;">
+        <form action="{% url 'listing_page' listing.pk %}" method="post">
+            {% csrf_token %}
+            <div class="form-group row" style="display: inline-block;">
+                <div class="col-sm-10" >
+                    {{ bid_form }}
+                </div>
+            </div>
+            <div class="form-group row" style="display: inline-block;">
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary">Bid</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% endif %}
     <h4>Details:</h4>
     <ul>
         <li>Listed by: {{ listing.username }} </li>

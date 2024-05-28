@@ -30,8 +30,9 @@ class NewListing(forms.Form):
     choice = forms.ChoiceField(choices = CATEGORY_CHOICES)
 
 
-# Watch list Form
-# class WatchlistForm(forms.Form):
+# Bid Form
+class BidForm(forms.Form):
+    bid = forms.DecimalField(min_value=1.00, max_digits=10, decimal_places=2)
 
 
 
@@ -116,8 +117,45 @@ def create_listing(request, *args, **kwargs):
     })
 
 def listing_page(request, id):
+    if request.user.is_anonymous:
+        return render(request, "auctions/listingpage.html", {
+        "listing": Listing.objects.get(pk=id),
+        "bid_form": BidForm()
+    })
+    
+    listing = Listing.objects.get(pk=id)
+    bidder = Bid.objects.all().filter(listing=listing, username=request.user).first()
+    if bidder == None:
+        pass
+    else:    
+        bidder = bidder.username
+    if request.method == "POST":
+        form = BidForm(request.POST)
+        if form.is_valid():
+            form_bid = form.cleaned_data["bid"]
+            listing = Listing.objects.get(pk=id)
+            current_user = request.user
+            if float(form_bid) <= listing.price:
+                return render(request, "auctions/listingpage.html", {
+                    "listing": listing,
+                    "bid_form": BidForm(),
+                    "winning_bid": bidder,
+                    "message": "Your bid was too low!"
+                })
+            else:
+                check_bid = Bid.objects.all().filter(listing=listing, username=current_user)
+                if check_bid:
+                    listing.price = float(form_bid)
+                    listing.save()                    
+                else:
+                    bid = Bid(listing=Listing.objects.get(pk=id), username=request.user)
+                    bid.save()
+                    listing.price = float(form_bid)
+                    listing.save()
     return render(request, "auctions/listingpage.html", {
         "listing": Listing.objects.get(pk=id),
+        "winning_bid": bidder,
+        "bid_form": BidForm()
     })
 
 
@@ -145,3 +183,4 @@ def watchlist(request):
     return render(request, "auctions/watchlist.html", {
         "watch": Watchlist.objects.all().filter(username=request.user)
     })
+

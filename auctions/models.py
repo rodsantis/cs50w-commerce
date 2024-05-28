@@ -34,10 +34,9 @@ class Comment(models.Model):
 class Bid(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bid")
     username = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bidder")
-    bids = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f"Listing: {self.listing}, Bids: {self.bids}"
+        return f"Listing: {self.listing}, by: {self.username}"
 
 
 class Watchlist(models.Model):

@@ -122,9 +122,9 @@ def listing_page(request, id):
         "listing": Listing.objects.get(pk=id),
         "bid_form": BidForm()
     })
-    
+
     listing = Listing.objects.get(pk=id)
-    bidder = Bid.objects.all().filter(listing=listing, username=request.user).first()
+    bidder = Bid.objects.all().filter(listing=listing.pk).first()
     if bidder == None:
         pass
     else:    
@@ -135,7 +135,20 @@ def listing_page(request, id):
             form_bid = form.cleaned_data["bid"]
             listing = Listing.objects.get(pk=id)
             current_user = request.user
-            if float(form_bid) <= listing.price:
+            if float(form_bid) == float(listing.price):
+                bid_exist = Bid.objects.all().filter(listing=listing.pk).first()
+                if bid_exist:
+                    return render(request, "auctions/listingpage.html", {
+                    "listing": listing,
+                    "bid_form": BidForm(),
+                    "winning_bid": bidder,
+                    "message": "Your bid was too low!"
+                })
+                else:
+                    bid = Bid(listing=Listing.objects.get(pk=id), username=request.user)
+                    bid.save()
+                    return HttpResponseRedirect(reverse("listing_page", args=(listing.pk,)))
+            elif float(form_bid) <= float(listing.price):
                 return render(request, "auctions/listingpage.html", {
                     "listing": listing,
                     "bid_form": BidForm(),
@@ -143,10 +156,17 @@ def listing_page(request, id):
                     "message": "Your bid was too low!"
                 })
             else:
-                check_bid = Bid.objects.all().filter(listing=listing, username=current_user)
+                check_bid = Bid.objects.all().filter(listing=listing.pk).first()
                 if check_bid:
-                    listing.price = float(form_bid)
-                    listing.save()                    
+                    if check_bid.username == current_user:
+                        listing.price = form_bid
+                        listing.save()                     
+                    else:
+                        check_bid.username = current_user
+                        check_bid.save()
+                        listing.price = form_bid
+                        listing.save()
+                        return HttpResponseRedirect(reverse("listing_page", args=(listing.pk,)))
                 else:
                     bid = Bid(listing=Listing.objects.get(pk=id), username=request.user)
                     bid.save()

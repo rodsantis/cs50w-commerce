@@ -3,13 +3,20 @@
 {% block body %}
     <h2>Active Listings</h2>
     {% if listings %}
-        <ul>
+        <ul style="list-style-type: none;">
             {% for item in listings %}
-            <div>
+            <div style="display: flex; justify-content: start; align-items: center;">
+                {% if item.img %}
+                <section>
+                    <figure>
+                        <img src="{{ item.img.url }}" alt="Listed item image" style="width: 150px;">
+                    </figure>
+                </section>
+                {% endif %}
                 <li>
-                    <a href="{% url 'listing_page' item.pk %}">
+                    <a href="{% url 'listing_page' item.pk %}" style="text-decoration: none; color: black;">
                         <h3>Title: {{ item.title }}</h3>
-                        <ul>
+                        <ul style="list-style-type: none;">
                             <li>Description: {{ item.description }}</li>
                             <li>Starting price: ${{ item.price }}</li>
                         </ul>

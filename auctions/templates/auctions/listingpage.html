@@ -19,18 +19,17 @@
             <input type="hidden" name="watchlist" value="{{ listing.pk }}">
             <button type="submit">Watchlist</button>
         </form>
-        <form style="display: inline-block;" action="{% url 'watchlist' %}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="unwatchlist" value="{{ listing.pk }}">
-            <button type="submit">Unwatch</button>
-        </form>
     </div>
     <!-- Bidding for the product -->
     {% if message %}
         <h4 style="padding-top: 10px;">{{ message }}</h4>
     {% endif %}
     {% if winning_bid %}
-        <h6 style="padding-top: 10px;">{{ winning_bid }}</h6>
+        {% if winning_bid == request.user %}
+            <h6 style="padding-top: 10px;">Your Bid is the current bid!</h6>
+        {% else %}
+            <h6 style="padding-top: 10px;">The current Bid is from {{ winning_bid }}!</h6>
+        {% endif %}
     {% endif %}
     <div style="padding-top: 10px;">
         <form action="{% url 'listing_page' listing.pk %}" method="post">

@@ -10,17 +10,22 @@
     {% endif %}
 
     {% if watch %}
-        <ul>
+        <ul style="list-style-type: none;">
             {% for item in watch %}
             <div>
                 <li>
-                    <a href="{% url 'listing_page' item.listing.pk %}">
+                    <a href="{% url 'listing_page' item.listing.pk %}" style="text-decoration: none; color: black;">
                         <h3>Title: {{ item.listing.title }}</h3>
-                    </a>
-                        <ul>
+                        <ul style="list-style-type: none;">
                             <li>Description: {{ item.listing.description }}</li>
                             <li>Starting price: ${{ item.listing.price }}</li>
                         </ul>
+                    </a>
+                    <form style="display: inline-block;" action="{% url 'watchlist' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="unwatchlist" value="{{ item.listing.pk }}">
+                        <button type="submit">Unwatch</button>
+                    </form>
                 </li>
             </div>
             {% endfor %}

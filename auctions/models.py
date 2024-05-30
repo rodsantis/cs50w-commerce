@@ -15,8 +15,7 @@ class Listing(models.Model):
     category = models.CharField(max_length=64)
     username = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner")
     img = models.ImageField(upload_to="auctions/uploads/images", blank=True, null=True, default=None)
-    # date = models.DateTimeField()
-    # TODO add the image entry also
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.title}: {self.description}, ${self.price}"

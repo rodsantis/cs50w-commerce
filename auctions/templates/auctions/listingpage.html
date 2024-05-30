@@ -13,12 +13,21 @@
         <h3>Current price: ${{ listing.price }} </h3>
         {% if user.is_authenticated and not_active == False%}
             <!-- Adding or removing watch list -->
-            <div>
+            <div style="display: inline-block;">
                 <form style="display: inline-block;" action="{% url 'watchlist' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="watchlist" value="{{ listing.pk }}">
                     <button type="submit">Watchlist</button>
                 </form>
+            </div>
+            <div style="display: inline-block;">
+                {% if listing.username == request.user and not_active == False %}
+                <form action="{% url 'listing_page' listing.pk %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="sold" value="{{ listing.pk }}">
+                    <button type="submit">Sell</button>
+                </form>
+                {% endif %}
             </div>
             <!-- Bidding for the product -->
             {% if message %}
@@ -57,18 +66,43 @@
             </div>
             {% endif %}
         {% endif %}
-        <div>
-            {% if listing.username == request.user and not_active == False %}
-            <form action="{% url 'listing_page' listing.pk %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="sold" value="{{ listing.pk }}">
-                <button type="submit">Sell</button>
-            </form>
-            {% endif %}
-        </div>
+        
         <h4>Details:</h4>
         <ul>
             <li>Listed by: {{ listing.username }} </li>
             <li>Category: {{ listing.category }} </li>
         </ul>
+
+        {% if listing_comment %}
+            <ul style="list-style-type: none;">
+                {% for item in listing_comment %}
+                <div style="display: flex; justify-content: start; align-items: center;">
+                    <li>
+                        <h5 style="display: inline;">Comment:</h5> <h6 style="font-style: italic; display: inline;">{{ item.comments }}</h6>
+                        <ul style="list-style-type: none;">
+                            <li>Author: {{ item.username }}</li>
+                        </ul>
+                    </li>
+                </div>
+            {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <div style="padding-top: 10px;">
+                <form action="{% url 'listing_comment' listing.pk %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group row" style="display: inline-block;">
+                        <div class="col-sm-10" >
+                            {{ comment_form }}
+                        </div>
+                    </div>
+                    <div class="form-group row" style="display: inline-block;">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary">Post</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
 {% endblock %}

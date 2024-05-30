@@ -34,6 +34,10 @@ class NewListing(forms.Form):
 class BidForm(forms.Form):
     bid = forms.DecimalField(min_value=1.00, max_digits=10, decimal_places=2)
 
+# Comment Form
+class CommentForm(forms.Form):
+    comment = forms.CharField(max_length=1000, label="Comment", widget=forms.Textarea(attrs={"style": "height:100px"}))
+
 
 def index(request):
     return render(request, "auctions/index.html", {
@@ -122,6 +126,9 @@ def create_listing(request, *args, **kwargs):
     })
 
 def listing_page(request, id):
+    # Checking for comment
+    comments = Comment.objects.all().filter(listing=id)
+
     # Checking for the highest bidder if that exists
     listing = Listing.objects.get(pk=id)
     bidder = Bid.objects.all().filter(listing=listing.pk).first()
@@ -140,7 +147,8 @@ def listing_page(request, id):
         "listing": Listing.objects.get(pk=id),
         "bid_form": BidForm(),
         "not_active": not_active,
-        "winning_bid": bidder
+        "winning_bid": bidder,
+        "listing_comment": comments
     })
     # IF POST
     if request.method == "POST":
@@ -164,7 +172,9 @@ def listing_page(request, id):
                         "listing": listing,
                         "bid_form": BidForm(),
                         "winning_bid": bidder,
-                        "message": "Your bid was too low!"
+                        "message": "Your bid was too low!",
+                        "comment_form": CommentForm(),
+                        "listing_comment": comments
                     })
                     else:
                         bid = Bid(listing=Listing.objects.get(pk=id), username=request.user)
@@ -175,7 +185,9 @@ def listing_page(request, id):
                         "listing": listing,
                         "bid_form": BidForm(),
                         "winning_bid": bidder,
-                        "message": "Your bid was too low!"
+                        "message": "Your bid was too low!",
+                        "comment_form": CommentForm(),
+                        "listing_comment": comments
                     })
                 else:
                     check_bid = Bid.objects.all().filter(listing=listing.pk).first()
@@ -203,7 +215,9 @@ def listing_page(request, id):
         "listing": Listing.objects.get(pk=id),
         "winning_bid": bidder,
         "bid_form": BidForm(),
-        "not_active": not_active
+        "not_active": not_active,
+        "comment_form": CommentForm(),
+        "listing_comment": comments
     })
 
 
@@ -231,3 +245,18 @@ def watchlist(request):
     return render(request, "auctions/watchlist.html", {
         "watch": Watchlist.objects.all().filter(username=request.user)
     })
+
+    
+def listing_comment(request, id):
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form_comment = form.cleaned_data["comment"]
+            print(f"{form_comment}")
+            listing = Listing.objects.get(pk=id)
+            print(f"Listing: {listing}")
+            current_user = request.user
+            print(f"User: {current_user}")
+            new_comment = Comment(listing=listing, username=current_user, comments=form_comment)
+            new_comment.save()
+            return HttpResponseRedirect(reverse("listing_page", args=(listing.pk,)))

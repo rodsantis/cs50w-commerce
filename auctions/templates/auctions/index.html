@@ -2,6 +2,9 @@
 
 {% block body %}
     <h2>Active Listings</h2>
+    {% if no_category_item %}
+        <h3>{{ no_category_item }}</h3>
+    {% endif %}
     {% if listings %}
         <ul style="list-style-type: none;">
             {% for item in listings %}

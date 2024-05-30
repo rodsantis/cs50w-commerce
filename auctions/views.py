@@ -51,6 +51,23 @@ def index_sold(request):
     })
 
 
+def index_category(request):
+    categories = list()
+    for item in CATEGORY_CHOICES:
+        categories.append(item[0])
+
+    return render(request, "auctions/indexcategory.html", {
+        "categories": categories
+    })
+
+
+def category_search(request, category):
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.all().filter(active=True, category=category),
+        "no_category_item": "We don't have any Listing in this category yet!"
+    })
+
+
 def login_view(request):
     if request.method == "POST":
 

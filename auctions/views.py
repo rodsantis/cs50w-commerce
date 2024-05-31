@@ -278,7 +278,7 @@ def watchlist(request):
             watch.delete()
 
     return render(request, "auctions/watchlist.html", {
-        "watch": Watchlist.objects.all().filter(username=request.user)
+        "watch": Watchlist.objects.all().filter(username=request.user),
     })
 
     

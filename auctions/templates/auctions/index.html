@@ -4,28 +4,40 @@
     <h2>Active Listings</h2>
     {% if listings %}
         <ul style="list-style-type: none;">
-            {% for item in listings %}
-            <div style="display: flex; justify-content: start; align-items: center;">
-                {% if item.img %}
-                <section>
-                    <figure>
-                        <img src="{{ item.img.url }}" alt="Listed item image" style="width: 150px;">
-                    </figure>
-                </section>
-                {% endif %}
-                <li>
-                    <a href="{% url 'listing_page' item.pk %}" style="text-decoration: none; color: black;">
-                        <h3>Title: {{ item.title }}</h3>
-                        <ul style="list-style-type: none;">
-                            <li>Description: {{ item.description }}</li>
-                            <li>Starting price: ${{ item.price }}</li>
-                        </ul>
-                    </a>
-                </li>
+            <div class="container">
+                <div class="row row-cols-4">
+                    {% for item in listings %}
+                        <li>
+                            <div class="col">
+                                <a href="{% url 'listing_page' item.pk %}" style="text-decoration: none; color: black;">
+                                {% if item.img %}
+                                    <div style="width: 150px; height: 150px;">
+                                        <figure>
+                                            <img src="{{ item.img.url }}" alt="Listed item image" style="width: 100%;">
+                                        </figure>
+                                    </div>
+                                {% else %}
+                                    <div style="width: 150px; height: 150px;">
+                                        <figure>
+                                            <img src="" alt="No image Listed" style="width: 100%;">
+                                        </figure>
+                                    </div>
+                                {% endif %}
+                                    <h3>Title: {{ item.title }}</h3>
+                                    <ul style="list-style-type: none;">
+                                        <li>Description: {{ item.description }}</li>
+                                        <li>Starting price: ${{ item.price }}</li>
+                                    </ul>
+                                </a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </div>
             </div>
-            {% endfor %}
         </ul>
     {% else %}
-        <h3>{{ no_category_item }}</h3>
+        <div class="alert alert-warning" role="alert">
+            <h3>{{ no_category_item }}</h3>
+        </div>
     {% endif %}
 {% endblock %}

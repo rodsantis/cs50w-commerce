@@ -34,21 +34,31 @@
             </div>
             <!-- Bidding for the product -->
             {% if message %}
-                <h4 style="padding-top: 10px;">{{ message }}</h4>
+                <div class="alert alert-danger" role="alert">
+                    <h4 style="padding-top: 10px;">{{ message }}</h4>
+                </div>
             {% endif %}
             {% if winning_bid and winning_bid.username != listing.username %}
                 {% if winning_bid.username == request.user%}
-                    <h6 style="padding-top: 10px;">Your Bid is the current bid!</h6>
+                    <div class="alert alert-primary" role="alert">
+                        <h6 style="padding-top: 10px;">Your Bid is the current bid!</h6>
+                    </div>
                 {% else %}
-                    <h6 style="padding-top: 10px;">The current Bid is from {{ winning_bid.username }}!</h6>
+                    <div class="alert alert-secondary" role="alert">
+                        <h6 style="padding-top: 10px;">The current Bid is from {{ winning_bid.username }}!</h6>
+                    </div>
                 {% endif %}
             {% endif %}
         {% endif %}
         {% if not_active == True and user.is_authenticated %}
             {% if winning_bid.username == request.user %}
-                <h3>You Won!! This Listing was bought by You !!!!</h3>
+                <div class="alert alert-success" role="alert">
+                    <h3>You Won!! This Listing was bought by You !!!!</h3>
+                </div>
             {% else %}
-                <h3>This Listing was bought by: {{ winning_bid.username }}!!!!</h3>
+                <div class="alert alert-secondary" role="alert">
+                    <h3>This Listing was bought by: {{ winning_bid.username }}!!!!</h3>
+                </div>
             {% endif %}
         {% else %}
             {% if user.is_authenticated %}

@@ -6,31 +6,52 @@
 
 {% block body %}
     {% if message %}
-        <h2>{{ message }}</h2>
+        <div class="alert alert-warning" role="alert">
+            <h2>{{ message }}</h2>
+        </div>
     {% endif %}
 
     {% if watch %}
         <ul style="list-style-type: none;">
-            {% for item in watch %}
-            <div>
-                <li>
-                    <a href="{% url 'listing_page' item.listing.pk %}" style="text-decoration: none; color: black;">
-                        <h3>Title: {{ item.listing.title }}</h3>
-                        <ul style="list-style-type: none;">
-                            <li>Description: {{ item.listing.description }}</li>
-                            <li>Starting price: ${{ item.listing.price }}</li>
-                        </ul>
-                    </a>
-                    <form style="display: inline-block;" action="{% url 'watchlist' %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="unwatchlist" value="{{ item.listing.pk }}">
-                        <button type="submit" class="btn btn-primary" >Unwatch</button>
-                    </form>
-                </li>
-            </div>
-            {% endfor %} 
+            <div class="container">
+                <div class="row row-cols-4">
+                    {% for item in watch %}
+                        <li>
+                            <div class="col">
+                                <a href="{% url 'listing_page' item.listing.pk %}" style="text-decoration: none; color: black;">
+                                    {% if item.listing.img %}
+                                        <div style="width: 150px; height: 150px;">
+                                            <figure>
+                                                <img src="{{ item.listing.img.url }}" alt="Listed item image" style="width: 100%;">
+                                            </figure>
+                                        </div>
+                                    {% else %}
+                                        <div style="width: 150px; height: 150px;">
+                                            <figure>
+                                                <img src="" alt="No image Listed" style="width: 100%;">
+                                            </figure>
+                                        </div>
+                                    {% endif %}
+                                    <h3>Title: {{ item.listing.title }}</h3>
+                                    <ul style="list-style-type: none;">
+                                        <li>Description: {{ item.listing.description }}</li>
+                                        <li>Starting price: ${{ item.listing.price }}</li>
+                                    </ul>
+                                </a>
+                                <form style="display: inline-block;" action="{% url 'watchlist' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="unwatchlist" value="{{ item.listing.pk }}">
+                                    <button type="submit" class="btn btn-primary" >Unwatch</button>
+                                </form>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </div>
+            </div> 
         </ul>
     {% else %}
-        <h3>You don't have a Wishlist item to be shown!</h3>
+        <div class="alert alert-warning" role="alert">
+            <h3>You don't have a Wishlist item to be shown!</h3>
+        </div>
     {% endif %}
 {% endblock %}

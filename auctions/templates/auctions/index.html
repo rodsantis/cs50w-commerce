@@ -5,29 +5,25 @@
     {% if listings %}
         <ul style="list-style-type: none;">
             <div class="container">
-                <div class="row row-cols-4">
+                <div class="row row-cols-4" style="column-gap: 1em;">
                     {% for item in listings %}
                         <li>
-                            <div class="col">
+                            <div class="col card" style="width: 18rem; border-radius: 20px;">
                                 <a href="{% url 'listing_page' item.pk %}" style="text-decoration: none; color: black;">
                                 {% if item.img %}
-                                    <div style="width: 150px; height: 150px;">
-                                        <figure>
-                                            <img src="{{ item.img.url }}" alt="Listed item image" style="width: 100%;">
-                                        </figure>
-                                    </div>
+                                    <img class="card-img-top" src="{{ item.img.url }}" alt="Listed item image" style="width: 100%; border-radius: 10%;">
                                 {% else %}
-                                    <div style="width: 150px; height: 150px;">
-                                        <figure>
-                                            <img src="" alt="No image Listed" style="width: 100%;">
-                                        </figure>
-                                    </div>
+                                    <div style="width: 100%; background-color: #aaa; height: 300px; border-radius: 10%;">
+                                        <p style="text-align: center;">No image Listed</p>
+                                    </div>                                  
                                 {% endif %}
-                                    <h3>Title: {{ item.title }}</h3>
-                                    <ul style="list-style-type: none;">
-                                        <li>Description: {{ item.description }}</li>
-                                        <li>Starting price: ${{ item.price }}</li>
-                                    </ul>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ item.title }}</h5>
+                                        <ul style="list-style-type: none;">
+                                            <li class="card-text">Description: {{ item.description }}</li>
+                                            <li class="card-text">Starting price: ${{ item.price }}</li>
+                                        </ul>
+                                    </div>
                                 </a>
                             </div>
                         </li>

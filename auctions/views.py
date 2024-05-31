@@ -143,16 +143,23 @@ def create_listing(request, *args, **kwargs):
     })
 
 def listing_page(request, id):
+    # Is listing active
+    listing_active = Listing.objects.get(pk=id)
+    not_active = False
+    if listing_active.active == False:
+        not_active = True
+    
     # Checking for comment
     comments = Comment.objects.all().filter(listing=id)
 
     # Checking for the highest bidder if that exists
     listing = Listing.objects.get(pk=id)
-    bidder = Bid.objects.all().filter(listing=listing.pk).first()
+    bidder = Bid.objects.all().filter(listing=listing.pk).order_by("-value").first()
     if bidder == None:
-        pass
-    else:    
-        bidder = bidder.username
+        info_listing = Listing.objects.get(pk=id)
+        bidder = Bid(listing=info_listing, username=info_listing.username, value=info_listing.price)
+        bidder.save()
+
 
     # Checking and displying page for an Anonymous user
     if request.user.is_anonymous:
@@ -160,12 +167,16 @@ def listing_page(request, id):
         not_active = False
         if listing_active.active == False:
             not_active = True
+        if float(listing_active.price) != float(bidder.value):
+            listing_active.price = bidder.value
+            listing_active.save()
         return render(request, "auctions/listingpage.html", {
         "listing": Listing.objects.get(pk=id),
         "bid_form": BidForm(),
         "not_active": not_active,
         "winning_bid": bidder,
-        "listing_comment": comments
+        "listing_comment": comments,
+        "not_active": not_active,
     })
     # IF POST
     if request.method == "POST":
@@ -183,51 +194,58 @@ def listing_page(request, id):
                 listing = Listing.objects.get(pk=id)
                 current_user = request.user
                 if float(form_bid) == float(listing.price):
-                    bid_exist = Bid.objects.all().filter(listing=listing.pk).first()
+                    bid_exist = Bid.objects.all().filter(listing=listing.pk).order_by("-value").first()
                     if bid_exist:
+                        if float(listing.price) != float(bidder.value):
+                            listing.price = bidder.value
+                            listing.save()
                         return render(request, "auctions/listingpage.html", {
                         "listing": listing,
                         "bid_form": BidForm(),
                         "winning_bid": bidder,
                         "message": "Your bid was too low!",
                         "comment_form": CommentForm(),
-                        "listing_comment": comments
+                        "listing_comment": comments,
+                        "not_active": not_active,
                     })
                     else:
-                        bid = Bid(listing=Listing.objects.get(pk=id), username=request.user)
+                        bid = Bid(listing=Listing.objects.get(pk=id), username=request.user, value=form_bid)
                         bid.save()
                         return HttpResponseRedirect(reverse("listing_page", args=(listing.pk,)))
                 elif float(form_bid) < float(listing.price):
+                    if float(listing.price) != float(bidder.value):
+                            listing.price = bidder.value
+                            listing.save()
                     return render(request, "auctions/listingpage.html", {
                         "listing": listing,
                         "bid_form": BidForm(),
                         "winning_bid": bidder,
                         "message": "Your bid was too low!",
                         "comment_form": CommentForm(),
-                        "listing_comment": comments
+                        "listing_comment": comments,
+                        "not_active": not_active,
                     })
                 else:
-                    check_bid = Bid.objects.all().filter(listing=listing.pk).first()
+                    check_bid = Bid.objects.all().filter(listing=listing.pk).order_by("-value").first()
                     if check_bid:
                         if check_bid.username == current_user:
                             listing.price = form_bid
                             listing.save()                     
                         else:
-                            check_bid.username = current_user
-                            check_bid.save()
+                            bid = Bid(listing=Listing.objects.get(pk=id), username=request.user, value=form_bid)
+                            bid.save()
                             listing.price = form_bid
                             listing.save()
                             return HttpResponseRedirect(reverse("listing_page", args=(listing.pk,)))
                     else:
-                        bid = Bid(listing=Listing.objects.get(pk=id), username=request.user)
+                        bid = Bid(listing=Listing.objects.get(pk=id), username=request.user, value=form_bid)
                         bid.save()
-                        listing.price = float(form_bid)
+                        listing.price = form_bid
                         listing.save()
                         return HttpResponseRedirect(reverse("listing_page", args=(listing.pk,)))
-    listing_active = Listing.objects.get(pk=id)
-    not_active = False
-    if listing_active.active == False:
-        not_active = True
+    if float(listing.price) != float(bidder.value):
+        listing.price = bidder.value
+        listing.save()
     return render(request, "auctions/listingpage.html", {
         "listing": Listing.objects.get(pk=id),
         "winning_bid": bidder,

@@ -2,6 +2,7 @@
 
 {% block body %}
         <h2>Listing: {{ listing.title }} </h2>
+
         {% if listing.img %}
         <section>
             <figure>
@@ -9,15 +10,17 @@
             </figure>
         </section>
         {% endif %}
+
         <p>Description: {{ listing.description }}</p>
-        <h3>Current price: ${{ listing.price }} </h3>
+        <h3>Current price: ${{ winning_bid.value }} </h3>
+
         {% if user.is_authenticated and not_active == False%}
             <!-- Adding or removing watch list -->
             <div style="display: inline-block;">
                 <form style="display: inline-block;" action="{% url 'watchlist' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="watchlist" value="{{ listing.pk }}">
-                    <button type="submit">Watchlist</button>
+                    <button type="submit" class="btn btn-primary">Watchlist</button>
                 </form>
             </div>
             <div style="display: inline-block;">
@@ -25,7 +28,7 @@
                 <form action="{% url 'listing_page' listing.pk %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="sold" value="{{ listing.pk }}">
-                    <button type="submit">Sell</button>
+                    <button type="submit" class="btn btn-primary">Sell</button>
                 </form>
                 {% endif %}
             </div>
@@ -33,19 +36,19 @@
             {% if message %}
                 <h4 style="padding-top: 10px;">{{ message }}</h4>
             {% endif %}
-            {% if winning_bid %}
-                {% if winning_bid == request.user %}
+            {% if winning_bid and winning_bid.username != listing.username %}
+                {% if winning_bid.username == request.user%}
                     <h6 style="padding-top: 10px;">Your Bid is the current bid!</h6>
                 {% else %}
-                    <h6 style="padding-top: 10px;">The current Bid is from {{ winning_bid }}!</h6>
+                    <h6 style="padding-top: 10px;">The current Bid is from {{ winning_bid.username }}!</h6>
                 {% endif %}
             {% endif %}
         {% endif %}
         {% if not_active == True and user.is_authenticated %}
-            {% if winning_bid == request.user %}
+            {% if winning_bid.username == request.user %}
                 <h3>You Won!! This Listing was bought by You !!!!</h3>
             {% else %}
-                <h3>This Listing was bought by: {{ winning_bid }}!!!!</h3>
+                <h3>This Listing was bought by: {{ winning_bid.username }}!!!!</h3>
             {% endif %}
         {% else %}
             {% if user.is_authenticated %}
@@ -74,10 +77,10 @@
         </ul>
 
         {% if listing_comment %}
-            <ul style="list-style-type: none;">
+            <ul class="list-group list-group-flush" style="list-style-type: none;">
                 {% for item in listing_comment %}
                 <div style="display: flex; justify-content: start; align-items: center;">
-                    <li>
+                    <li class="list-group-item">
                         <h5 style="display: inline;">Comment:</h5> <h6 style="font-style: italic; display: inline;">{{ item.comments }}</h6>
                         <ul style="list-style-type: none;">
                             <li>Author: {{ item.username }}</li>

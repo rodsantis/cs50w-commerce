@@ -24,11 +24,11 @@
                     <form style="display: inline-block;" action="{% url 'watchlist' %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="unwatchlist" value="{{ item.listing.pk }}">
-                        <button type="submit">Unwatch</button>
+                        <button type="submit" class="btn btn-primary" >Unwatch</button>
                     </form>
                 </li>
             </div>
-            {% endfor %}
+            {% endfor %} 
         </ul>
     {% else %}
         <h3>You don't have a Wishlist item to be shown!</h3>

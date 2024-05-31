@@ -6,8 +6,8 @@
 
 {% block body %}
     {% for item in categories %}
-        <ul>
-            <li><a href="{% url 'category_search' item %}">{{ item }}</a></li>
+        <ul class="list-group" style="list-style-type: none;">
+            <li style="margin: 2px;"><a href="{% url 'category_search' item %}" style="text-decoration: none; color: black;" class="list-group-item list-group-item-action">{{ item }}</a></li>
         </ul>
     {% endfor %}
 {% endblock %}

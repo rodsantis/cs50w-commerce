@@ -8,26 +8,28 @@
     <h2>Closed Listings</h2>
     {% if listings %}
         <ul style="list-style-type: none;">
-            {% for item in listings %}
-            <div style="display: flex; justify-content: start; align-items: center;">
-                {% if item.img %}
-                <section>
-                    <figure>
-                        <img src="{{ item.img.url }}" alt="Listed item image" style="width: 150px;">
-                    </figure>
-                </section>
-                {% endif %}
-                <li>
-                    <a href="{% url 'listing_page' item.pk %}" style="text-decoration: none; color: black;">
-                        <h3>Title: {{ item.title }}</h3>
-                        <ul style="list-style-type: none;">
-                            <li>Description: {{ item.description }}</li>
-                            <li>Starting price: ${{ item.price }}</li>
-                        </ul>
-                    </a>
-                </li>
+            <div class="container">
+                <div class="row row-cols-4" style="column-gap: 1em; row-gap: 0.5em;">
+                    {% for item in listings %}
+                        <li>
+                            <div class="col card" style="width: 18rem; border-radius: 20px;">
+                                <a href="{% url 'listing_page' item.pk %}" style="text-decoration: none; color: black;">
+                                {% if item.img %}
+                                    <img class="card-img-top" src="{{ item.img.url }}" alt="Listed item image" style="border-radius: 10%;">
+                                {% else %}
+                                    <img src="" alt="No image listed">    
+                                {% endif %}
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ item.title }}</h5>
+                                        <p class="card-text">Description: {{ item.description }}</p>
+                                        <p class="card-text">Starting price: ${{ item.price }}</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </div>
             </div>
-            {% endfor %}
         </ul>
     {% endif %}
 {% endblock %}

@@ -229,6 +229,8 @@ def listing_page(request, id):
                     check_bid = Bid.objects.all().filter(listing=listing.pk).order_by("-value").first()
                     if check_bid:
                         if check_bid.username == current_user:
+                            check_bid.value = form_bid
+                            check_bid.save()
                             listing.price = form_bid
                             listing.save()                     
                         else:

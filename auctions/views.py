@@ -232,7 +232,8 @@ def listing_page(request, id):
                             check_bid.value = form_bid
                             check_bid.save()
                             listing.price = form_bid
-                            listing.save()                     
+                            listing.save() 
+                            return HttpResponseRedirect(reverse("listing_page", args=(listing.pk,)))                    
                         else:
                             bid = Bid(listing=Listing.objects.get(pk=id), username=request.user, value=form_bid)
                             bid.save()
